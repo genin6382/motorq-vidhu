@@ -16,6 +16,18 @@ class Vehicles(db.Model):
     registration_status = db.Column(db.String(20), default='Active') 
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "vin": self.vin,
+            "manufacturer": self.manufacturer,
+            "model": self.model,
+            "fleet_id": self.fleet_id,
+            "owner_info": self.owner_info,
+            "registration_status": self.registration_status,
+            "timestamp": self.timestamp.isoformat()
+        }
+
 
 
 class Telemetry(db.Model):
@@ -29,3 +41,4 @@ class Telemetry(db.Model):
     fuel_level = db.Column(db.Float) 
     odometer_reading = db.Column(db.Float,default=0.0)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
