@@ -8,12 +8,14 @@ class Vehicles(db.Model):
     __tablename__= "Vehicles"
 
     id = db.Column(db.Integer, primary_key=True)
-    vin = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    vin = db.Column(db.String(36), primary_key=True)
     manufacturer = db.Column(db.String(100), nullable=False)
     model = db.Column(db.String(100), nullable=False)
     fleet_id = db.Column(db.String(50), nullable=False) 
     owner_info = db.Column(db.Text) 
     registration_status = db.Column(db.String(20), default='Active') 
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
 
 
 class Telemetry(db.Model):
@@ -25,5 +27,5 @@ class Telemetry(db.Model):
     speed_kmh = db.Column(db.Float)
     engine_status = db.Column(db.String(10)) 
     fuel_level = db.Column(db.Float) 
-    odometer_reading = db.Column(db.Float)
+    odometer_reading = db.Column(db.Float,default=0.0)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
