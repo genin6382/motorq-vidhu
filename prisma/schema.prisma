@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+enum FleetType {
+  Corporate
+  Rental
+  Personal
+}
+
+enum RegistrationStatus {
+  Active 
+  Registered
+  Decommissioned
+}
+
+enum EngineStatus {
+   On 
+   Off 
+   Idle 
+}
+
+enum Severity {
+  Low
+  Medium
+  High
+  Critical
+}
+
+enum AlertType {
+  SpeedViolation
+  LowFuel
+  Maintenance
+  EngineStatus
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Owner {
+  ownerId Int @id @default(autoincrement()) @map("owner_id")
+  name String 
+  createdAt DateTime @default(now()) @map("created_at")
+  fleets Fleet[] 
+
+  @@map("owners")
+}
+
+model Fleet {
+  fleetId Int @id @default(autoincrement()) @map("fleet_id")
+  fleetType FleetType @map("fleet_type")
+  ownerId Int @map("owner_id")
+  owner Owner @relation(fields: [ownerId], references: [ownerId], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  vehicles Vehicle[]
+
+  @@map("fleets")
+}
+
+model Vehicle {
+  vin Int @id 
+  manufacturer String 
+  model String 
+  fleetId Int @map("fleet_id")
+  fleet Fleet @relation(fields: [fleetId], references:[fleetId], onDelete: Cascade)
+  registrationStatus RegistrationStatus @map("registration_status")
+  createdAt DateTime @default(now()) @map("created_at")
+  Telemetry Telemetry[]
+  Alerts Alert[]
+
+  @@map("vehicles")
+}
+
+model Telemetry {
+  telemetryId Int @id @default(autoincrement()) @map("telemetry_id")
+  vin Int 
+  vehicle Vehicle @relation(fields: [vin], references: [vin], onDelete: Cascade)
+  latitude Float 
+  longitude Float 
+  speed Float
+  engineStatus EngineStatus @map("engine_status")
+  fuelLevel Float @map("fuel_level")
+  odometerReading Float @map("odometer_reading")
+  timestamp DateTime @default(now())
+  
+
+  @@index([vin,timestamp], name: "idx_vin_timestamp")
+  @@map("telemetries")
+}
+
+model Alert {
+  alertId Int @id @default(autoincrement()) @map("alert_id")
+  vin Int 
+  vehicle Vehicle @relation(fields: [vin], references: [vin], onDelete: Cascade)
+  alertType AlertType @map("alert_type")
+  severity Severity @map("severity")
+  message String
+  actualValue Float @map("actual_value")
+  thresholdValue Float @map("threshold_value")
+  createdAt DateTime @default(now()) @map("created_at")
+  isResolved Boolean @default(false) @map("is_resolved")
+  resolvedAt DateTime? @map("resolved_at")
+
+
+  @@index([alertType])
+  @@map("alerts")
+}
