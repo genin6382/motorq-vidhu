@@ -63,6 +63,7 @@ model Fleet {
   createdAt DateTime @default(now()) @map("created_at")
   vehicles Vehicle[]
 
+  @@index([ownerId])
   @@map("fleets")
 }
 
@@ -77,6 +78,7 @@ model Vehicle {
   Telemetry Telemetry[]
   Alerts Alert[]
 
+  @@index([fleetId])
   @@map("vehicles")
 }
 
@@ -93,7 +95,7 @@ model Telemetry {
   timestamp DateTime @default(now())
   
 
-  @@index([vin,timestamp], name: "idx_vin_timestamp")
+  @@index([vin,timestamp(sort:Desc)], name: "idx_vin_timestamp")
   @@map("telemetries")
 }
 
@@ -111,6 +113,6 @@ model Alert {
   resolvedAt DateTime? @map("resolved_at")
 
 
-  @@index([alertType])
+  @@index([alertType,severity,createdAt], name: "idx_alerttype_severity")
   @@map("alerts")
 }

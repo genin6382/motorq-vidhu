@@ -1,0 +1,13 @@
+
+#Owner Routes
+
+###
+GET http://localhost:3000/owners
+###
+GET http://localhost:3000/owners/1
+###
+POST http://localhost:3000/owners/create
+Content-Type: application/json
+{
+  "name":"Vidhu"
+}
