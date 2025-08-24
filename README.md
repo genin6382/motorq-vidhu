@@ -2,7 +2,7 @@
 
 ## How to clone?
 ```
-git clone [text](https://github.com/genin6382/motorq-vidhu)
+git clone https://github.com/genin6382/motorq-vidhu
 
 cp .env.example .env
 
