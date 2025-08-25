@@ -27,3 +27,5 @@ npm run dev
     * repositories/ - prisma orm
     * schemas/ - input validation 
 6. Usting **.rest** for testing apis 
+7. Created routes for owners
+8. Created routes for fleets

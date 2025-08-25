@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as ownerRepository from '../repositories/ownerRepository';
-
+import { OwnerSchema } from '../schemas/owner.schema';
 
 export async function getAllOwners(req: Request , res: Response){
   try{
@@ -36,7 +36,12 @@ export async function getOwnerById(req:Request , res:Response){
 
 export async function createOwner(req:Request , res:Response){
   try{
-    const newOwner = await ownerRepository.createOwner(req.body);
+    const requestData = req.body;
+    const parsed = OwnerSchema.safeParse(requestData);
+    if(!parsed.success){
+      return res.status(400).json({ error: "Invalid request data", details: parsed.error.format() });
+    }
+    const newOwner = await ownerRepository.createOwner(parsed.data);
     if (!newOwner) {
       return res.status(400).json({ error: "Failed to create owner" });
     }

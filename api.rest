@@ -8,6 +8,22 @@ GET http://localhost:3000/owners/1
 ###
 POST http://localhost:3000/owners/create
 Content-Type: application/json
+
 {
-  "name":"Vidhu"
+  "name":"Arun"
+}
+
+#Fleet Routes 
+
+###
+GET http://localhost:3000/fleets
+###
+GET http://localhost:3000/fleets/10
+###
+POST http://localhost:3000/fleets/create
+Content-Type: application/json
+
+{
+  "fleetType":"Corporate",
+  "ownerId": 4
 }
