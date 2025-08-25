@@ -27,3 +27,24 @@ Content-Type: application/json
   "fleetType":"Corporate",
   "ownerId": 4
 }
+
+#Vehicle Routes
+
+###
+GET http://localhost:3000/vehicles
+###
+GET http://localhost:3000/vehicles/12345
+###
+POST http://localhost:3000/vehicles/create
+Content-Type: application/json
+
+{
+  "vin":12345,
+  "manufacturer":"Toyota",
+  "model":"Camry",
+  "fleetId": 5,
+  "registrationStatus":"Active"
+}
+
+###
+DELETE http://localhost:3000/vehicles/delete/12345

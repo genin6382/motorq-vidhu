@@ -6,7 +6,7 @@ import { FleetSchema } from '../schemas/fleet.schema';
 export async function getAllFleets(req:Request , res:Response){
     try{
         const fleets = await fleetRepository.getAllFleets();
-        if(!fleets){
+        if(fleets.length === 0){
             return res.status(404).send("No fleets found");
         }
         return res.status(200).json(fleets);
