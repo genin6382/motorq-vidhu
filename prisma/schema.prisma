@@ -59,10 +59,10 @@ model Fleet {
   fleetId Int @id @default(autoincrement()) @map("fleet_id")
   fleetType FleetType @map("fleet_type")
   ownerId Int @map("owner_id")
-  owner Owner @relation(fields: [ownerId], references: [ownerId], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")
   vehicles Vehicle[]
 
+  owner Owner @relation(fields: [ownerId], references: [ownerId], onDelete: Cascade)
   @@index([ownerId])
   @@map("fleets")
 }
@@ -72,12 +72,12 @@ model Vehicle {
   manufacturer String 
   model String 
   fleetId Int @map("fleet_id")
-  fleet Fleet @relation(fields: [fleetId], references:[fleetId], onDelete: Cascade)
   registrationStatus RegistrationStatus @map("registration_status")
   createdAt DateTime @default(now()) @map("created_at")
   Telemetry Telemetry[]
   Alerts Alert[]
 
+  fleet Fleet @relation(fields: [fleetId], references:[fleetId], onDelete: Cascade)
   @@index([fleetId])
   @@map("vehicles")
 }
@@ -85,24 +85,26 @@ model Vehicle {
 model Telemetry {
   telemetryId Int @id @default(autoincrement()) @map("telemetry_id")
   vin Int 
-  vehicle Vehicle @relation(fields: [vin], references: [vin], onDelete: Cascade)
   latitude Float 
   longitude Float 
   speed Float
   engineStatus EngineStatus @map("engine_status")
   fuelLevel Float @map("fuel_level")
   odometerReading Float @map("odometer_reading")
-  timestamp DateTime @default(now())
-  
+  timestamp DateTime 
+  createdAt DateTime @default(now()) @map("created_at")
+  diagnosticCodes String? @map("diagnostic_codes")
 
-  @@index([vin,timestamp(sort:Desc)], name: "idx_vin_timestamp")
+
+  vehicle Vehicle @relation(fields: [vin], references: [vin], onDelete: Cascade)
+  @@unique([vin,timestamp(sort:Desc)], name: "idx_vin_timestamp")
+  @@index([vin],name:"idx_vin")
   @@map("telemetries")
 }
 
 model Alert {
   alertId Int @id @default(autoincrement()) @map("alert_id")
   vin Int 
-  vehicle Vehicle @relation(fields: [vin], references: [vin], onDelete: Cascade)
   alertType AlertType @map("alert_type")
   severity Severity @map("severity")
   message String
@@ -112,7 +114,7 @@ model Alert {
   isResolved Boolean @default(false) @map("is_resolved")
   resolvedAt DateTime? @map("resolved_at")
 
-
-  @@index([alertType,severity,createdAt], name: "idx_alerttype_severity")
+  vehicle Vehicle @relation(fields: [vin], references: [vin], onDelete: Cascade)
+  @@unique([alertType,severity,createdAt], name: "idx_alerttype_severity")
   @@map("alerts")
 }

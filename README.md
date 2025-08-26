@@ -29,3 +29,6 @@ npm run dev
 6. Usting **.rest** for testing apis 
 7. Created routes for owners
 8. Created routes for fleets
+9. Added routes for vehicles
+10. Added routes for telemetry data
+11. Used node-scheduler to schedule cron job for every 30 seconds to generate random data

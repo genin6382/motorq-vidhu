@@ -40,11 +40,72 @@ Content-Type: application/json
 
 {
   "vin":12345,
-  "manufacturer":"Toyota",
-  "model":"Camry",
+  "manufacturer":"Hyundai",
+  "model":"Cresta",
   "fleetId": 5,
   "registrationStatus":"Active"
 }
 
 ###
 DELETE http://localhost:3000/vehicles/delete/12345
+
+#Telemetry
+
+###
+GET http://localhost:3000/telemetry
+###
+GET http://localhost:3000/telemetry/history/123146
+###
+GET http://localhost:3000/telemetry/latest/12345
+###
+POST http://localhost:3000/telemetry/create
+Content-Type: application/json
+
+{
+  "vin": 123145,
+  "latitude": 37.7749,
+  "longitude": -122.4194,
+  "speed": 60,
+  "fuelLevel": 80,
+  "engineStatus": "On",
+  "odometerReading": 150,
+  "timestamp": "2023-10-05T12:00:00Z"
+  
+}
+
+###
+POST http://localhost:3000/telemetry/bulk
+Content-Type: application/json
+
+[
+  {
+    "vin": 123145,
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "speed": 60,
+    "fuelLevel": 80,
+    "engineStatus": "On",
+    "odometerReading": 150,
+    "timestamp": "2023-10-05T12:00:00Z"
+  },
+  {
+    "vin": 123146,
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "speed": 60,
+    "fuelLevel": 80,
+    "engineStatus": "On",
+    "odometerReading": 150,
+    "timestamp": "2023-10-05T12:00:00Z"
+  },
+  {
+    "vin": 123147,
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "speed": 60,
+    "fuelLevel": 80,
+    "engineStatus": "On",
+    "odometerReading": 150,
+    "timestamp": "2023-10-05T12:00:00Z"
+  }
+]
