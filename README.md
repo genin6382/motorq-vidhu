@@ -33,5 +33,5 @@ npm run dev
 10. Added routes for telemetry data
 11. Used node-scheduler to schedule cron job for every 30 seconds to generate random data
 12. Added Checks during Telemetry Data ingestion to trigger alerts
-13. Added function to resolve previous errors 
+13. Added function to resolve previous alerts 
 14. Added routes for alerts
