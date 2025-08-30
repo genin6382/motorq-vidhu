@@ -26,9 +26,12 @@ npm run dev
     * services/ - business logic 
     * repositories/ - prisma orm
     * schemas/ - input validation 
-6. Usting **.rest** for testing apis 
+6. Using **.rest** for testing apis 
 7. Created routes for owners
 8. Created routes for fleets
 9. Added routes for vehicles
 10. Added routes for telemetry data
 11. Used node-scheduler to schedule cron job for every 30 seconds to generate random data
+12. Added Checks during Telemetry Data ingestion to trigger alerts
+13. Added function to resolve previous errors 
+14. Added routes for alerts

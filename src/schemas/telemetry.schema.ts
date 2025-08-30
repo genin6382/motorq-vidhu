@@ -9,7 +9,7 @@ export const TelemetrySchema = z.object({
     fuelLevel: z.float32().min(0).max(100),
     odometerReading: z.float32().min(0),
     timestamp: z.date(),
-    diagnosticCodes: z.string().optional()
+    diagnosticCodes: z.string().nullable().optional()
 }).strict();
 
 export type TelemetryCreateInput = z.infer<typeof TelemetrySchema>;

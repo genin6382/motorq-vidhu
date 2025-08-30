@@ -1,10 +1,11 @@
 import * as telemetryRepository from '../repositories/telemetryRepository';
 import * as vehicleRepository from '../repositories/vehicleRepository';
+import * as alertService from './alertService';
 import { TelemetrySchema } from '../schemas/telemetry.schema';
 import {Request,Response} from 'express';
 
 
-//Helper function for generation random data
+//Helper function for generating random data
 export async function fetchAndCreateTelemetry(){
     const vehicles = await vehicleRepository.getAllVehicles();
     for(const vehicle of vehicles){
@@ -25,7 +26,7 @@ export async function fetchAndCreateTelemetry(){
                 engineStatus: latestTelemetry.engineStatus,
                 odometerReading: latestTelemetry.odometerReading + (Math.random() * 2),
                 timestamp: new Date(),
-                diagnosticCodes: Math.random() < 0.1 ? "P0420" : undefined
+                diagnosticCodes: Math.random() < 0.1 ? "P0420" : null
             }
             console.log("Generated telemetry data:", telemetryData);
             await telemetryRepository.createTelemetry(telemetryData);
@@ -40,7 +41,7 @@ export async function fetchAndCreateTelemetry(){
                 engineStatus: 'On' as "On" | "Off" | "Idle" , //Helps prevent enum error 
                 odometerReading: 1,
                 timestamp: new Date(),
-                diagnosticCodes: Math.random() < 0.1 ? "P0420" : undefined //helps prevent string error
+                diagnosticCodes: Math.random() < 0.1 ? "P0420" : null //helps prevent string error
             }
             console.log("Generated telemetry data:", telemetryData);
             await telemetryRepository.createTelemetry(telemetryData);
@@ -92,8 +93,25 @@ export async function createTelemetry(req:Request,res:Response){
     if (await vehicleRepository.getVehicleById(vin) === null) {
         return res.status(400).send("Invalid Vin .Vehicle not found");
     }
+    const latestTelemetry= await telemetryRepository.getLatestTelemetry(vin);
+    if (latestTelemetry && latestTelemetry.timestamp > telemetryData.timestamp) {
+        if(latestTelemetry.timestamp.getTime() - telemetryData.timestamp.getTime() > 2 * 60 * 1000) {
+           return res.status(409).json({ message: 'Telemetry data delay is too high' }); 
+        } 
+    }
+    //record created inside db
     const newTelemetry = await telemetryRepository.createTelemetry(telemetryData);
-    res.status(201).json(newTelemetry);
+    //checking for alerts
+    const alertGenerated = await alertService.evaluateTelemetry(telemetryData);
+
+    await alertService.resolveOldAlerts();    
+
+    if(alertGenerated){
+        return res.status(201).json({ message: 'Telemetry data created and alert generated', data: newTelemetry });
+    }
+    else{
+        return res.status(201).json({ message: 'Telemetry data created without alerts', data: newTelemetry });
+    }
 }
 
 export async function createBatchTelemetry(req:Request,res:Response){
